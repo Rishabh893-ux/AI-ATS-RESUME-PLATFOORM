@@ -18,12 +18,15 @@
 ### 📸 Application Previews
 
 <div align="center">
-  <img src="./public/screenshots/landing.png" width="49%" alt="Landing Page">
+  <img src="./public/screenshots/landing.png" width="800" alt="Landing Page">
+  <br><em>Landing Page</em><br><br>
+
   <img src="./public/screenshots/dashboard_page.png" width="49%" alt="Dashboard">
-  <br><em>Landing Page & Dashboard</em><br><br>
   <img src="./public/screenshots/resume_builder_page.png" width="49%" alt="Resume Builder">
-  <img src="./public/screenshots/ats_checker_page.png" width="49%" alt="ATS Score Checker">
-  <br><em>Resume Builder & ATS Score Checker</em>
+  <br><em>Dashboard & Resume Builder</em><br><br>
+
+  <img src="./public/screenshots/ats_checker_page.png" width="800" alt="ATS Score Checker">
+  <br><em>ATS Score Checker</em>
 </div>
 
 <br/>
