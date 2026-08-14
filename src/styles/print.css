@@ -1,0 +1,51 @@
+/* === PRINT STYLES === */
+/* These styles ensure the Resume Preview looks good when printed to PDF */
+
+@media print {
+  /* Hide all app UI when printing */
+  nav,
+  aside,
+  header,
+  .app-layout > *:not(.print-target),
+  [class*="toolbar"],
+  [class*="Toolbar"],
+  [class*="Sidebar"],
+  [class*="sidebar"],
+  [class*="Header"],
+  [class*="Toast"],
+  [class*="sidebarWrapper"],
+  [class*="previewWrapper"] > *:not([class*="a4"]) {
+    display: none !important;
+  }
+
+  /* Show and fill page with the A4 resume */
+  body {
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Make the A4 page fill the print area */
+  [class*="a4Page"],
+  [class*="a4-page"],
+  .a4-page {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 20mm !important;
+  }
+
+  /* Ensure all content is visible */
+  * {
+    color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
