@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { Zap, CheckCircle } from 'lucide-react';
+import { Zap, CheckCircle, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import styles from './login.module.css';
 
 const FEATURES = [
@@ -12,6 +14,73 @@ const FEATURES = [
 ];
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      if (isLogin) {
+        const res = await signIn('credentials', {
+          redirect: false,
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (res?.error) {
+          setError(res.error);
+        } else {
+          router.push('/dashboard');
+        }
+      } else {
+        // Register new user
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.message || 'Something went wrong');
+        } else {
+          // Auto login after registration
+          const loginRes = await signIn('credentials', {
+            redirect: false,
+            email: formData.email,
+            password: formData.password,
+          });
+
+          if (loginRes?.error) {
+            setError(loginRes.error);
+          } else {
+            router.push('/dashboard');
+          }
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={styles.page}>
       {/* Left panel */}
@@ -55,14 +124,17 @@ export default function LoginPage() {
       <div className={styles.right}>
         <div className={styles.card}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>Sign in to ResumeAI</h2>
-            <p className={styles.cardSubtitle}>Start building your best resume today</p>
+            <h2 className={styles.cardTitle}>{isLogin ? 'Sign in to ResumeAI' : 'Create an Account'}</h2>
+            <p className={styles.cardSubtitle}>
+              {isLogin ? 'Start building your best resume today' : 'Join thousands landing their dream jobs'}
+            </p>
           </div>
 
           <button
             className={styles.googleBtn}
             onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
             id="sign-in-google"
+            type="button"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -73,24 +145,102 @@ export default function LoginPage() {
             Continue with Google
           </button>
 
-          <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-            <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>or for testing:</span>
+          <div style={{ display: 'flex', alignItems: 'center', margin: '1.5rem 0' }}>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+            <span style={{ padding: '0 0.75rem', fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+              Or continue with email
+            </span>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
           </div>
-          
-          <button
-            className={styles.googleBtn}
-            style={{ marginTop: '0.5rem', background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
-            onClick={() => signIn('credentials', { email: 'demo@example.com', password: 'password', callbackUrl: '/dashboard' })}
-            id="sign-in-demo"
-          >
-            One-Click Demo Login
-          </button>
 
-          <p className={styles.terms}>
-            By signing in, you agree to our{' '}
+          {error && <div style={{ color: '#ef4444', fontSize: '0.875rem', marginBottom: '1rem', background: '#fef2f2', padding: '0.75rem', borderRadius: '6px', border: '1px solid #fecaca' }}>{error}</div>}
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {!isLogin && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label htmlFor="name" style={{ fontSize: '0.875rem', fontWeight: 500 }}>Full Name</label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required={!isLogin}
+                  value={formData.name}
+                  onChange={handleChange}
+                  style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+                  placeholder="John Doe"
+                />
+              </div>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <label htmlFor="email" style={{ fontSize: '0.875rem', fontWeight: 500 }}>Email Address</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+                placeholder="you@example.com"
+              />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <label htmlFor="password" style={{ fontSize: '0.875rem', fontWeight: 500 }}>Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+                style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+                placeholder="••••••••"
+                minLength={6}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              style={{ 
+                marginTop: '0.5rem', 
+                padding: '0.875rem', 
+                borderRadius: '8px', 
+                background: 'var(--primary)', 
+                color: 'white', 
+                fontWeight: 500, 
+                border: 'none', 
+                cursor: isLoading ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              {isLoading && <Loader2 size={16} className="animate-spin" />}
+              {isLogin ? 'Sign In' : 'Create Account'}
+            </button>
+          </form>
+
+          <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem' }}>
+            <span style={{ color: 'var(--text-secondary)' }}>
+              {isLogin ? "Don't have an account? " : 'Already have an account? '}
+            </span>
+            <button 
+              type="button" 
+              onClick={() => { setIsLogin(!isLogin); setError(''); }}
+              style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 500, cursor: 'pointer', padding: 0 }}
+            >
+              {isLogin ? 'Sign up' : 'Sign in'}
+            </button>
+          </div>
+
+          <p className={styles.terms} style={{ marginTop: '2rem' }}>
+            By continuing, you agree to our{' '}
             <a href="#" className={styles.link}>Terms of Service</a> and{' '}
             <a href="#" className={styles.link}>Privacy Policy</a>.
-            Your resume data is processed securely and never shared.
           </p>
         </div>
       </div>
