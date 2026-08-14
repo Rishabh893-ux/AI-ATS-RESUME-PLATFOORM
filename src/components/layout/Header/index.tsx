@@ -44,6 +44,7 @@ export default function Header() {
                   src={session.user.image}
                   alt={session.user.name || 'Profile'}
                   className={styles.avatar}
+                  referrerPolicy="no-referrer"
                 />
               ) : (
                 <div className={styles.avatarFallback}>
