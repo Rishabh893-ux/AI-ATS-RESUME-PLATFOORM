@@ -11,17 +11,20 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-green?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
 [![Google Gemini](https://img.shields.io/badge/Google-Gemini_AI-orange?style=for-the-badge&logo=google)](https://ai.google.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](./LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)](https://github.com/YOUR-USERNAME/ai-ats-resume-platform/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)](https://github.com/Rishabh893-ux/AI-ATS-RESUME-PLATFOORM/pulls)
 
 <br/>
 
 ### 📸 Application Previews
 
-| Landing Page | Dashboard |
-|:---:|:---:|
-| <img src="./public/screenshots/landing.png" width="400" alt="Landing Page"> | <img src="./public/screenshots/dashboard_page.png" width="400" alt="Dashboard"> |
-| **Resume Builder** | **ATS Score Checker** |
-| <img src="./public/screenshots/resume_builder_page.png" width="400" alt="Resume Builder"> | <img src="./public/screenshots/ats_checker_page.png" width="400" alt="ATS Score Checker"> |
+<div align="center">
+  <img src="./public/screenshots/landing.png" width="49%" alt="Landing Page">
+  <img src="./public/screenshots/dashboard_page.png" width="49%" alt="Dashboard">
+  <br><em>Landing Page & Dashboard</em><br><br>
+  <img src="./public/screenshots/resume_builder_page.png" width="49%" alt="Resume Builder">
+  <img src="./public/screenshots/ats_checker_page.png" width="49%" alt="ATS Score Checker">
+  <br><em>Resume Builder & ATS Score Checker</em>
+</div>
 
 <br/>
 
@@ -138,7 +141,7 @@ You also need:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR-USERNAME/ai-ats-resume-platform.git
+git clone https://github.com/Rishabh893-ux/AI-ATS-RESUME-PLATFOORM.git
 cd ai-ats-resume-platform
 
 # 2. Install dependencies
@@ -239,7 +242,7 @@ Distributed under the **MIT License**. See [LICENSE](./LICENSE) for more informa
 
 Made with passion by **Rishabh**
 
-- GitHub: [@YOUR-USERNAME](https://github.com/YOUR-USERNAME)
+- GitHub: [@Rishabh893-ux](https://github.com/Rishabh893-ux)
 
 ---
 
