@@ -2,7 +2,7 @@ import { type NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
-import dbConnect from '@/lib/db/mongoose';
+import { connectDB } from '@/lib/db/mongoose';
 import User from '@/lib/models/User';
 
 export const authOptions: NextAuthOptions = {
@@ -22,7 +22,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Please enter an email and password');
         }
 
-        await dbConnect();
+        await connectDB();
 
         const user = await User.findOne({ email: credentials.email }).select('+password');
 

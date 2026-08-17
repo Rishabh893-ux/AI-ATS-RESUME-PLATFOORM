@@ -208,7 +208,7 @@ export default function LoginPage() {
                 marginTop: '0.5rem', 
                 padding: '0.875rem', 
                 borderRadius: '8px', 
-                background: 'var(--primary)', 
+                background: 'var(--accent)', 
                 color: 'white', 
                 fontWeight: 500, 
                 border: 'none', 
@@ -231,7 +231,7 @@ export default function LoginPage() {
             <button 
               type="button" 
               onClick={() => { setIsLogin(!isLogin); setError(''); }}
-              style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 500, cursor: 'pointer', padding: 0 }}
+              style={{ background: 'none', border: 'none', color: 'var(--accent)', fontWeight: 500, cursor: 'pointer', padding: 0 }}
             >
               {isLogin ? 'Sign up' : 'Sign in'}
             </button>

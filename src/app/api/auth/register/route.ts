@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import dbConnect from '@/lib/db/mongoose';
+import { connectDB } from '@/lib/db/mongoose';
 import User from '@/lib/models/User';
 
 export async function POST(req: Request) {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       );
     }
 
-    await dbConnect();
+    await connectDB();
 
     // Check if user exists
     const userExists = await User.findOne({ email });
