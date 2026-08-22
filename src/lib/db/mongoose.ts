@@ -31,9 +31,22 @@ export async function connectDB(): Promise<typeof mongoose> {
       try {
         if (isDummyURI) throw new Error('Dummy URI provided');
         const conn = await mongoose.connect(MONGODB_URI, { bufferCommands: false });
-        console.log('Connected to remote MongoDB successfully.');
+        console.log('✅ Connected to remote MongoDB successfully.');
         return conn;
       } catch (err: any) {
+        // If it's an auth error, don't silently fall back - surface it clearly
+        const isAuthError =
+          err?.message?.includes('bad auth') ||
+          err?.message?.includes('authentication failed') ||
+          err?.code === 18;
+
+        if (isAuthError) {
+          console.error('❌ MongoDB Authentication Failed. Please check your MONGODB_URI credentials in .env.local');
+          throw new Error(
+            'MongoDB authentication failed. Please update your database password in .env.local'
+          );
+        }
+
         if (process.env.NODE_ENV !== 'production') {
           console.warn('⚠️ Could not connect to remote MongoDB (or dummy URI used). Falling back to Memory Server...');
           const { MongoMemoryServer } = await import('mongodb-memory-server');
