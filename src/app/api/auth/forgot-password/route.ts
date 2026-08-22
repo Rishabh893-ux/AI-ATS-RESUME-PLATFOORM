@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { connectDB } from '@/lib/db/mongoose';
 import User from '@/lib/models/User';
+import { sendPasswordResetEmail } from '@/lib/email';
 
 export async function POST(req: Request) {
   try {
@@ -34,16 +35,30 @@ export async function POST(req: Request) {
 
     const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${resetToken}`;
 
-    // In production, send email here (e.g., via Nodemailer, Resend, SendGrid).
-    // For now, log it to the console in development.
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`\n🔑 Password Reset Link (DEV MODE):\n${resetUrl}\n`);
+    // Send the email
+    try {
+      await sendPasswordResetEmail(email, resetUrl, user.name);
+      console.log(`✅ Password reset email sent to ${email}`);
+    } catch (emailError: any) {
+      console.error('❌ Failed to send reset email:', emailError.message);
+
+      // In dev mode, still return the link so you can test without email setup
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`\n🔑 Password Reset Link (DEV FALLBACK):\n${resetUrl}\n`);
+        return NextResponse.json({
+          message: 'Email could not be sent (check EMAIL_USER/EMAIL_PASS in .env.local). Dev reset link below.',
+          devResetUrl: resetUrl,
+        });
+      }
+
+      return NextResponse.json(
+        { message: 'Failed to send reset email. Please try again later.' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
       message: 'If an account with that email exists, a reset link has been sent.',
-      // Only expose token in development for testing
-      ...(process.env.NODE_ENV !== 'production' && { devResetUrl: resetUrl }),
     });
   } catch (error: any) {
     console.error('Error in /api/auth/forgot-password:', error);
