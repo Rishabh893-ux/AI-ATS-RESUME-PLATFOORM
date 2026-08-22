@@ -58,7 +58,7 @@ export default function LoginPage() {
         const data = await res.json();
 
         if (!res.ok) {
-          setError(data.message || 'Something went wrong');
+          setError(data.error ? `${data.message}: ${data.error}` : data.message || 'Something went wrong');
         } else {
           // Auto login after registration
           const loginRes = await signIn('credentials', {
